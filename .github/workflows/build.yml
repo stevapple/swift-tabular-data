@@ -15,6 +15,7 @@ jobs:
           - macos-13
           - ubuntu-20.04
           - ubuntu-22.04
+          - windows-2022
         swift:
           - '5.7'
           - '5.8'
@@ -22,8 +23,15 @@ jobs:
     steps:
       - name: Setup Swift
         uses: swift-actions/setup-swift@v1
+        if: ${{ !startsWith(matrix.os, 'windows') }}
         with:
           swift-version: ${{ matrix.swift }}
+      - name: Setup Swift
+        uses: compnerd/gha-setup-swift@main
+        if: ${{ startsWith(matrix.os, 'windows') }}
+        with:
+          branch: swift-${{ matrix.swift }}-release
+          tag: ${{ matrix.swift }}-RELEASE
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build
